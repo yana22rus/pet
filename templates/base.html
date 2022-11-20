@@ -12,21 +12,28 @@
     <div class="sidebar">
         <h2>Меню</h2>
         <ul>
-            <li><a href="#">test</a></li>
-            <li><a href="#">test</a></li>
-            <li><a href="#">test</a></li>
-            <li><a href="#">test</a></li>
+            {% block sidebar %}
+            {% for m in side_bar %}
+            <li><a href="{{m.url}}">{{m.name}}</a></li>
+            {% endfor %}
+            {% endblock%}
         </ul>
     </div>
     <div class="main_content">
         <div class="line">
             <div class="header">
-                <a href="#">Администрирование</a>
-                <a href="#">Центральный сайт</a>
-                <a href="#">Дочерний сайт</a>
+                {% block footer %}
+                {% for m in footer %}
+                <a href="{{m.url}}">{{m.name}}</a>
+                {% endfor %}
+                {% endblock%}
             </div>
         </div>
-        <div class="info">333333333333333444444444444444444444</div>
+        <div class="info">
+            {% block content %}
+
+            {% endblock%}
+        </div>
 
     </div>
 </div>

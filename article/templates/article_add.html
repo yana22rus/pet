@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" enctype=multipart/form-data>
+    <label for="title">Заголовок
+    <input type="text" name="title" placeholder="Заголовок" id="title" size="30" maxlength="30">
+    </label>
+    <label for="subtitle">Подзаголовок
+    <input type="text" name="subtitle" placeholder="Подзаголовок" id="subtitle" size="30" maxlength="30">
+    </label>
+    <label for="content_page">Описание
+    <input type="text" name="content_page" placeholder="Описание" id="content_page" size="30" maxlength="30">
+    </label>
+    <label for="img">Изображение
+    <input type="file" name="img" placeholder="Изображение" id="img" accept="image/png,image/jpeg" required>
+    </label>
+    <input type="submit" value="Сохранить">
+</form>
+{% endblock %}

@@ -60,3 +60,12 @@ body {
     color: #717171;
     line-height: 25px;
 }
+.wrapper .main_content .info label{
+    margin: 20px;
+    color: #4b4276;
+    line-height: 25px;
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+
+}
