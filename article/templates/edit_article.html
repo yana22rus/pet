@@ -5,7 +5,7 @@
 <form method="POST" enctype=multipart/form-data>
     {% for x in query %}
     <label for="title">Заголовок
-        <input type="text" name="title" placeholder="Заголовок" id="title" size="30" maxlength="10" value="{{x.0}}">
+        <input type="text" name="title" placeholder="Заголовок" id="title" size="30" maxlength="10" value="{{x.1}}">
     </label>
     <label for="subtitle">Подзаголовок
         <input type="text" name="subtitle" placeholder="Подзаголовок" id="subtitle" size="30" maxlength="10" value="{{x.2}}">

@@ -27,8 +27,6 @@ def create():
 
         img = f'{uuid4()}.{file.filename.split(".")[-1].lower()}'
 
-        print(img)
-
         file.save(os.path.join("static", Config.UPLOAD_FOLDER, img))
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
@@ -52,5 +50,21 @@ def update(news_id):
         cur = con.cursor()
     cur.execute(f"""SELECT login,title,subtitle,content_page,img FROM Article  WHERE id='{news_id}';""")
     query = [cur.fetchone()]
+
+    if request.method == "POST":
+        login = "test"
+
+        title = request.form["title"]
+
+        subtitle = request.form["subtitle"]
+
+        content_page = request.form["content_page"]
+
+        with sqlite3.connect(Config.DATABASE_URI) as con:
+            cur = con.cursor()
+            cur.execute(
+                f"""UPDATE Article SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{news_id}';""")
+
+        return redirect(url_for('.update', news_id=news_id), 302)
 
     return render_template("edit_article.html", query=query)
