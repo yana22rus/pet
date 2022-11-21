@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<form method="POST">
+    <input type="submit" value="Удалить" name="submit">
+</form>
 <form method="POST" enctype=multipart/form-data>
     {% for x in query %}
     <label for="title">Заголовок
@@ -17,7 +19,7 @@
     <label for="img">Изображение
         <input type="file" name="img" placeholder="Изображение" id="img" accept="image/png,image/jpeg">
     </label>
-    <input type="submit" value="Сохранить">
+    <input type="submit" value="Сохранить" name="submit">
     {% endfor %}
 </form>
 

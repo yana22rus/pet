@@ -9,6 +9,9 @@ from config import Config
 
 article_bp = Blueprint("/", __name__, template_folder="templates")
 
+@article_bp.route("/")
+def index():
+    return ""
 
 @article_bp.route("/article/add", methods=["GET", "POST"])
 def create():
@@ -52,19 +55,34 @@ def update(news_id):
     query = [cur.fetchone()]
 
     if request.method == "POST":
-        login = "test"
 
-        title = request.form["title"]
+        if request.form["submit"] == "Сохранить":
 
-        subtitle = request.form["subtitle"]
+            login = "test"
 
-        content_page = request.form["content_page"]
+            title = request.form["title"]
 
-        with sqlite3.connect(Config.DATABASE_URI) as con:
-            cur = con.cursor()
-            cur.execute(
-                f"""UPDATE Article SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{news_id}';""")
+            subtitle = request.form["subtitle"]
 
-        return redirect(url_for('.update', news_id=news_id), 302)
+            content_page = request.form["content_page"]
+
+            with sqlite3.connect(Config.DATABASE_URI) as con:
+                cur = con.cursor()
+                cur.execute(
+                    f"""UPDATE Article SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{news_id}';""")
+
+            return redirect(url_for('.update', news_id=news_id), 302)
+
+        if request.form["submit"] == "Удалить":
+            delete(news_id)
+            return redirect(url_for(".index"))
 
     return render_template("edit_article.html", query=query)
+
+
+@article_bp.route("/article/delete/<int:news_id>", methods=["POST"])
+def delete(news_id):
+    if request.method == "POST":
+        with sqlite3.connect(Config.DATABASE_URI) as con:
+            cur = con.cursor()
+            cur.execute(f"""DELETE FROM Article WHERE id='{news_id}';""")
