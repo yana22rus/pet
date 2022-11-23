@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<button><a href="{{ url_for('.article')}}">Назад к списку новостей</a></button>
 <form method="POST" enctype=multipart/form-data>
     <label for="title">Заголовок
     <input type="text" name="title" placeholder="Заголовок" id="title" size="30" maxlength="30">
