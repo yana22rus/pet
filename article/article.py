@@ -13,6 +13,19 @@ article_bp = Blueprint("/", __name__, template_folder="templates")
 def index():
     return ""
 
+
+@article_bp.route("/article", methods=["GET", "POST"])
+def article():
+
+    with sqlite3.connect(Config.DATABASE_URI) as con:
+        cur = con.cursor()
+        cur.execute(f"""SELECT id,title,subtitle,login,time FROM Article;""")
+        data = cur.fetchall()
+
+
+    return render_template("article.html",data=data)
+
+
 @article_bp.route("/article/add", methods=["GET", "POST"])
 def create():
     if request.method == "POST":

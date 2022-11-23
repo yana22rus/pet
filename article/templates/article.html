@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<button><a href="{{ url_for('.create') }}">Добавить</a></button>
+<table border="0">
+    <tr>
+        <td>id</td>
+        <td>Заголовок</td>
+        <td>Описание</td>
+        <td>Автор</td>
+        <td>Время создания</td>
+        <td colspan="2">Действие</td>
+     </tr>
+
+    {%for x in data %}
+
+
+        <td>{{x.0}}</td>
+        <td><a href="{{ url_for('.update',news_id=x.0) }}">{{x.1}}</a></td>
+        <td>{{x.2}}</td>
+        <td><a href="#">{{x.3}}</a></td>
+        <td>{{x.4}}</td>
+        <td><button><a href="{{ url_for('.update',news_id=x.0) }}">Редактировать</a></button></td>
+        <td>
+            <form method="POST">
+                <input type="text" value="" hidden>
+                <input type="submit" value="Удалить">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
