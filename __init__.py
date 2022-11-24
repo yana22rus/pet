@@ -18,8 +18,10 @@ footer = [{"name": "Администрирование", "url": "/admin"}, {"nam
           {"name": "Дочерний сайт", "url": "/subsites"}]
 
 from article.article import article_bp
+from document.document import document_bp
 
 app.register_blueprint(article_bp)
+app.register_blueprint(document_bp)
 app.jinja_env.globals.update(side_bar=side_bar)
 app.jinja_env.globals.update(footer=footer)
 

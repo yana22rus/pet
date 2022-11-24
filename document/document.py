@@ -7,15 +7,12 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 from config import Config
 
-article_bp = Blueprint("/", __name__, template_folder="templates")
-
-@article_bp.route("/")
-def index():
-    return ""
+document_bp = Blueprint("/q", __name__, template_folder="templates")
 
 
-@article_bp.route("/article", methods=["GET", "POST"])
-def show():
+
+@document_bp.route("/document", methods=["GET", "POST"])
+def article():
 
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
@@ -23,10 +20,10 @@ def show():
         data = cur.fetchall()
 
 
-    return render_template("article.html",data=data)
+    return render_template("document.html",data=data)
 
 
-@article_bp.route("/article/add", methods=["GET", "POST"])
+@document_bp.route("/document/add", methods=["GET", "POST"])
 def create():
     if request.method == "POST":
         login = "admin"
@@ -57,10 +54,10 @@ def create():
 
             return redirect(url_for('.update', news_id=news_id), 302)
 
-    return render_template("article_add.html")
+    return render_template("document_add.html")
 
 
-@article_bp.route("/article/edit/<int:news_id>", methods=["GET", "POST"])
+@document_bp.route("/document/edit/<int:news_id>", methods=["GET", "POST"])
 def update(news_id):
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
@@ -90,10 +87,10 @@ def update(news_id):
             delete(news_id)
             return redirect(url_for(".index"))
 
-    return render_template("edit_article.html", query=query)
+    return render_template("edit_document.html", query=query)
 
 
-@article_bp.route("/article/delete/<int:news_id>", methods=["POST"])
+@document_bp.route("/document/delete/<int:news_id>", methods=["POST"])
 def delete(news_id):
     if request.method == "POST":
         with sqlite3.connect(Config.DATABASE_URI) as con:
