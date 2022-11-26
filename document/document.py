@@ -12,15 +12,18 @@ document_bp = Blueprint("/q", __name__, template_folder="templates")
 
 
 @document_bp.route("/document", methods=["GET", "POST"])
-def article():
-
+def show():
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
-        cur.execute(f"""SELECT id,title,subtitle,login,time FROM Article;""")
+        cur.execute(f"""SELECT id,title,subtitle,login,time FROM document;""")
         data = cur.fetchall()
 
+    if request.method == "POST":
+        delete(request.form["delete"])
 
-    return render_template("document.html",data=data)
+        return redirect(url_for(".show"))
+
+    return render_template("document.html", data=data)
 
 
 @document_bp.route("/document/add", methods=["GET", "POST"])
@@ -44,12 +47,12 @@ def create():
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute("INSERT INTO Article (login,time,title,subtitle,content_page,img) VALUES  (?,?,?,?,?,?)",
+            cur.execute("INSERT INTO document (login,time,title,subtitle,content_page,img) VALUES  (?,?,?,?,?,?)",
                         (login, time, title, subtitle, content_page, img))
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute(f"""SELECT id FROM Article  WHERE title='{title}';""")
+            cur.execute(f"""SELECT id FROM document  WHERE title='{title}';""")
             news_id = cur.fetchone()[0]
 
             return redirect(url_for('.update', news_id=news_id), 302)
@@ -61,13 +64,12 @@ def create():
 def update(news_id):
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
-    cur.execute(f"""SELECT login,title,subtitle,content_page,img FROM Article  WHERE id='{news_id}';""")
+    cur.execute(f"""SELECT login,title,subtitle,content_page,img FROM document  WHERE id='{news_id}';""")
     query = [cur.fetchone()]
 
     if request.method == "POST":
 
         if request.form["submit"] == "Сохранить":
-
             login = "test"
 
             title = request.form["title"]
@@ -79,13 +81,13 @@ def update(news_id):
             with sqlite3.connect(Config.DATABASE_URI) as con:
                 cur = con.cursor()
                 cur.execute(
-                    f"""UPDATE Article SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{news_id}';""")
+                    f"""UPDATE document SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{news_id}';""")
 
             return redirect(url_for('.update', news_id=news_id), 302)
 
         if request.form["submit"] == "Удалить":
             delete(news_id)
-            return redirect(url_for(".index"))
+            return redirect(url_for(".show"))
 
     return render_template("edit_document.html", query=query)
 
@@ -95,4 +97,4 @@ def delete(news_id):
     if request.method == "POST":
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute(f"""DELETE FROM Article WHERE id='{news_id}';""")
+            cur.execute(f"""DELETE FROM document WHERE id='{news_id}';""")

@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <table border="0">
     <tr>
         <td>id</td>
@@ -22,7 +21,7 @@
     <td><button><a href="{{ url_for('.update',news_id=x.0) }}">Редактировать</a></button></td>
     <td>
         <form method="POST">
-            <input type="text" value="" hidden>
+            <input type="text" value="{{x.0}}" name="delete" hidden>
             <input type="submit" value="Удалить">
         </form>
     </td>

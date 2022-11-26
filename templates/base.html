@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bootstrap 5 Side Bar Navigation</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 <div class="wrapper">
@@ -34,19 +34,19 @@
             {% if '/article' in request.url %}
             <button><a href="{{ url_for('.create') }}">Добавить новость</a></button>
             {% endif %}
-            {% if '/document' == request.url%}
+            {% if '/document' in request.url%}
             <button><a href="{{ url_for('.create') }}">Добавить документ</a></button>
             {% endif %}
-            {% if '/survey' == request.url%}
+            {% if '/survey' in request.url%}
             <button><a href="{{ url_for('.create') }}">Добавить опрос</a></button>
             {% endif %}
-            {% if '/quiz' == request.url%}
+            {% if '/quiz' in request.url%}
             <button><a href="{{ url_for('.create') }}">Добавить викторину</a></button>
             {% endif %}
-            {% if '/photo_report' == request.url%}
+            {% if '/photo_report' in request.url%}
             <button><a href="{{ url_for('.create') }}">Добавить фоторепортаж</a></button>
             {% endif %}
-            {% if '/video_report' == request.url%}
+            {% if '/video_report' in request.url%}
             <button><a href="{{ url_for('.create') }}">Добавить видео репортаж</a></button>
             {% endif %}
 

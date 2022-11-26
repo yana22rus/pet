@@ -6,6 +6,10 @@
     font-family: 'Joseffin Sans', sans-serif;
 }
 
+form {
+    all: unset;
+}
+
 body {
     background: #f3f5f9;
 }

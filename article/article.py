@@ -9,21 +9,21 @@ from config import Config
 
 article_bp = Blueprint("/", __name__, template_folder="templates")
 
-@article_bp.route("/")
-def index():
-    return ""
 
 
 @article_bp.route("/article", methods=["GET", "POST"])
 def show():
-
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
         cur.execute(f"""SELECT id,title,subtitle,login,time FROM Article;""")
         data = cur.fetchall()
 
+    if request.method == "POST":
+        delete(request.form["delete"])
 
-    return render_template("article.html",data=data)
+        return redirect(url_for(".show"))
+
+    return render_template("article.html", data=data)
 
 
 @article_bp.route("/article/add", methods=["GET", "POST"])
@@ -57,7 +57,7 @@ def create():
 
             return redirect(url_for('.update', news_id=news_id), 302)
 
-    return render_template("article_add.html")
+    return render_template("document_add.html")
 
 
 @article_bp.route("/article/edit/<int:news_id>", methods=["GET", "POST"])
@@ -70,7 +70,6 @@ def update(news_id):
     if request.method == "POST":
 
         if request.form["submit"] == "Сохранить":
-
             login = "test"
 
             title = request.form["title"]
@@ -88,9 +87,9 @@ def update(news_id):
 
         if request.form["submit"] == "Удалить":
             delete(news_id)
-            return redirect(url_for(".index"))
+            return redirect(url_for(".show"))
 
-    return render_template("edit_article.html", query=query)
+    return render_template("edit_document.html", query=query)
 
 
 @article_bp.route("/article/delete/<int:news_id>", methods=["POST"])
