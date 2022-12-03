@@ -57,7 +57,7 @@ def create():
 
             return redirect(url_for('.update', news_id=news_id), 302)
 
-    return render_template("document_add.html")
+    return render_template("article_add.html")
 
 
 @article_bp.route("/article/edit/<int:news_id>", methods=["GET", "POST"])
@@ -89,7 +89,7 @@ def update(news_id):
             delete(news_id)
             return redirect(url_for(".show"))
 
-    return render_template("edit_document.html", query=query)
+    return render_template("edit_article.html", query=query)
 
 
 @article_bp.route("/article/delete/<int:news_id>", methods=["POST"])

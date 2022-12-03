@@ -1,3 +1,4 @@
+import json
 import os
 import sqlite3
 from datetime import datetime
@@ -39,16 +40,27 @@ def create():
 
         content_page = request.form["content_page"]
 
-        file = request.files["img"]
+        list_doc = []
 
-        img = f'{uuid4()}.{file.filename.split(".")[-1].lower()}'
+        d = request.files.keys()
 
-        file.save(os.path.join("static", Config.UPLOAD_FOLDER, img))
+        for x in d:
+
+            file = request.files[x]
+
+            if file.filename != "":
+
+                doc_name = f'{uuid4()}.{file.filename.split(".")[-1].lower()}'
+
+                file.save(os.path.join("static", Config.UPLOAD_FOLDER, doc_name))
+
+                list_doc.append(doc_name)
+
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute("INSERT INTO document (login,time,title,subtitle,content_page,img) VALUES  (?,?,?,?,?,?)",
-                        (login, time, title, subtitle, content_page, img))
+            cur.execute("INSERT INTO document (login,time,title,subtitle,content_page,files) VALUES  (?,?,?,?,?,?)",
+                        (login, time, title, subtitle, content_page,json.dumps(list_doc)))
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
@@ -64,7 +76,7 @@ def create():
 def update(news_id):
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
-    cur.execute(f"""SELECT login,title,subtitle,content_page,img FROM document  WHERE id='{news_id}';""")
+    cur.execute(f"""SELECT login,title,subtitle,content_page,files FROM document  WHERE id='{news_id}';""")
     query = [cur.fetchone()]
 
     if request.method == "POST":
@@ -89,7 +101,7 @@ def update(news_id):
             delete(news_id)
             return redirect(url_for(".show"))
 
-    return render_template("edit_document.html", query=query)
+    return render_template("edit_document.html", query=query,lst=json.loads(query[-1][-1]))
 
 
 @document_bp.route("/document/delete/<int:news_id>", methods=["POST"])

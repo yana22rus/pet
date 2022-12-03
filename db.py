@@ -31,7 +31,7 @@ with sqlite3.connect(path) as con:
     subtitle STRING,
     content_page STRING,
     short_link STRING,
-    file STRING,
+    files STRING,
     is_deleted INTEGER NOT NULL DEFAULT 0
     )""")
 

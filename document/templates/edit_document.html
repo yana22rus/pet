@@ -12,10 +12,10 @@
     <label for="content_page">Описание
         <input type="text" name="content_page" placeholder="Описание" id="content_page" size="30" maxlength="10" value="{{x.3}}">
     </label>
-    <img src="/static/img/uploads/{{x.4}}" width="33%" height="33%">
-    <label for="img">Изображение
-        <input type="file" name="img" placeholder="Изображение" id="img" accept="image/png,image/jpeg">
-    </label>
+    {% for z in lst %}
+    <a href="/static/img/uploads/{{z}}">{{z}}</a><br>
+    {% endfor %}
+    <br>
     <input type="submit" value="Сохранить" name="submit">
     {% endfor %}
 </form>
