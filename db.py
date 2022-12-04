@@ -17,6 +17,7 @@ with sqlite3.connect(path) as con:
     content_page STRING,
     short_link STRING,
     img STRING,
+    structure STRING,
     is_deleted INTEGER NOT NULL DEFAULT 0,
     tag_news STRING
     )""")
@@ -30,6 +31,7 @@ with sqlite3.connect(path) as con:
     title STRING NOT NULL UNIQUE,
     subtitle STRING,
     content_page STRING,
+    structure STRING,
     short_link STRING,
     files STRING,
     is_deleted INTEGER NOT NULL DEFAULT 0

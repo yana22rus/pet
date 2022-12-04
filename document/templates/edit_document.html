@@ -12,6 +12,14 @@
     <label for="content_page">Описание
         <input type="text" name="content_page" placeholder="Описание" id="content_page" size="30" maxlength="10" value="{{x.3}}">
     </label>
+    <select name="structure">
+        <option hidden>{{x.4}}</option>
+        {% for x in list_structure %}
+        <option>{{x.0}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
     {% for z in lst %}
     <a href="/static/img/uploads/{{z}}">{{z}}</a><br>
     {% endfor %}

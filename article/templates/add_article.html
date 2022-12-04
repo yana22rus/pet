@@ -15,6 +15,14 @@
     <label for="img">Изображение
     <input type="file" name="img" placeholder="Изображение" id="img" accept="image/png,image/jpeg" required>
     </label>
+    <select name="structure">
+        <option hidden>Выбрать значение</option>
+        {% for x in list_structure %}
+        <option id="{{x}}">{{x.0}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
     <input type="submit" value="Сохранить">
 </form>
 {% endblock %}

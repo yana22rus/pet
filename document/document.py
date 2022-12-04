@@ -11,7 +11,6 @@ from config import Config
 document_bp = Blueprint("/document", __name__, template_folder="templates")
 
 
-
 @document_bp.route("/document", methods=["GET", "POST"])
 def show():
     with sqlite3.connect(Config.DATABASE_URI) as con:
@@ -40,6 +39,8 @@ def create():
 
         content_page = request.form["content_page"]
 
+        structure = request.form["structure"]
+
         list_doc = []
 
         d = request.files.keys()
@@ -49,18 +50,17 @@ def create():
             file = request.files[x]
 
             if file.filename != "":
-
                 doc_name = f'{uuid4()}.{file.filename.split(".")[-1].lower()}'
 
                 file.save(os.path.join("static", Config.UPLOAD_FOLDER, doc_name))
 
                 list_doc.append(doc_name)
 
-
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute("INSERT INTO document (login,time,title,subtitle,content_page,files) VALUES  (?,?,?,?,?,?)",
-                        (login, time, title, subtitle, content_page,json.dumps(list_doc)))
+            cur.execute(
+                "INSERT INTO document (login,time,title,subtitle,content_page,structure,files) VALUES  (?,?,?,?,?,?,?)",
+                (login, time, title, subtitle, content_page, structure, json.dumps(list_doc)))
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
@@ -69,14 +69,21 @@ def create():
 
             return redirect(url_for('.update', entity_id=entity_id), 302)
 
-    return render_template("add_document.html")
+    with sqlite3.connect(Config.DATABASE_URI) as con:
+        cur = con.cursor()
+        cur.execute(f"""SELECT title FROM Structure WHERE structure='Раздел документов';""")
+        list_structure = cur.fetchall()
+
+    print(list_structure)
+
+    return render_template("add_document.html", list_structure=list_structure)
 
 
 @document_bp.route("/document/edit/<int:entity_id>", methods=["GET", "POST"])
 def update(entity_id):
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
-    cur.execute(f"""SELECT login,title,subtitle,content_page,files FROM document WHERE id='{entity_id}';""")
+    cur.execute(f"""SELECT login,title,subtitle,content_page,structure,files FROM document WHERE id='{entity_id}';""")
     query = [cur.fetchone()]
 
     if request.method == "POST":
@@ -90,10 +97,12 @@ def update(entity_id):
 
             content_page = request.form["content_page"]
 
+            structure = request.form["structure"]
+
             with sqlite3.connect(Config.DATABASE_URI) as con:
                 cur = con.cursor()
                 cur.execute(
-                    f"""UPDATE document SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{entity_id}';""")
+                    f"""UPDATE document SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}',structure='{structure}' WHERE id='{entity_id}';""")
 
             return redirect(url_for('.update', entity_id=entity_id), 302)
 
@@ -101,7 +110,14 @@ def update(entity_id):
             delete(entity_id)
             return redirect(url_for(".show"))
 
-    return render_template("edit_document.html", query=query,lst=json.loads(query[-1][-1]))
+    with sqlite3.connect(Config.DATABASE_URI) as con:
+        cur = con.cursor()
+        cur.execute(f"""SELECT title FROM Structure  WHERE structure='Раздел документов';""")
+        list_structure = cur.fetchall()
+
+    return render_template("edit_document.html", query=query, list_structure=list_structure,
+                           lst=json.loads(query[-1][-1]))
+
 
 
 @document_bp.route("/document/delete/<int:entity_id>", methods=["POST"])

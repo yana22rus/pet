@@ -11,6 +11,14 @@
     <label for="content_page">Описание
     <input type="text" name="content_page" placeholder="Описание" id="content_page" size="30" maxlength="30">
     </label>
+    <select name="structure">
+        <option hidden>Выбрать значение</option>
+        {% for x in list_structure %}
+        <option>{{x.0}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
     <input type="submit" value="Сохранить" id="bth">
 </form>
 <button onclick="dow_file()">Добавить файл</button>

@@ -1,8 +1,5 @@
-import json
-import os
 import sqlite3
 from datetime import datetime
-from uuid import uuid4
 
 from flask import Blueprint, render_template, request, redirect, url_for
 
@@ -10,7 +7,7 @@ from config import Config
 
 structure_bp = Blueprint("/structure", __name__, template_folder="templates")
 
-default_value_structure = (
+default_value_structure = ("Простой раздел",
     "Раздел новостей", "Раздел документов", "Раздел опросов", "Раздел викторин", "Раздел фоторепортажей",
     "Раздел видео-репортажей")
 
