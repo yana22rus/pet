@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" enctype=multipart/form-data>
+    {% for x in query %}
+    <label for="title">Заголовок
+        <input type="text" name="title" placeholder="Заголовок" id="title" size="30" maxlength="10" value="{{x.1}}">
+    </label>
+    <label for="subtitle">Подзаголовок
+        <input type="text" name="subtitle" placeholder="Подзаголовок" id="subtitle" size="30" maxlength="10" value="{{x.2}}">
+    </label>
+    <label for="content_page">Описание
+        <input type="text" name="content_page" placeholder="Описание" id="content_page" size="30" maxlength="10" value="{{x.3}}">
+    </label>
+    <select name="structure">
+        <option hidden>{{x.4}}</option>
+        {% for z in default_value_structure %}
+        <option>{{z}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
+    <input type="submit" value="Сохранить" name="submit">
+    {% endfor %}
+</form>
+
+<script src="{{ url_for('static', filename='js/change_title_btn.js') }}"></script>
+{% endblock %}

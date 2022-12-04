@@ -43,6 +43,9 @@
             {% if '/quiz' in request.url%}
             <button><a href="{{ url_for('.create') }}">Добавить викторину</a></button>
             {% endif %}
+            {% if '/structure' in request.url%}
+            <button><a href="{{ url_for('.create') }}">Добавить раздел</a></button>
+            {% endif %}
             {% if '/photo_report' in request.url%}
             <button><a href="{{ url_for('.create') }}">Добавить фоторепортаж</a></button>
             {% endif %}
@@ -61,6 +64,9 @@
             {% endif %}
             {% if '/quiz/add' in request.url%}
             <button><a href="{{ url_for('.show')}}">Назад к списку викторин</a></button>
+            {% endif %}
+            {% if '/quiz/structure' in request.url%}
+            <button><a href="{{ url_for('.show')}}">Назад к списку разделов</a></button>
             {% endif %}
             {% if '/photo_report/add' in request.url%}
             <button><a href="{{ url_for('.show')}}">Назад к списку фоторепортажей</a></button>
@@ -81,6 +87,9 @@
             {% endif %}
             {% if '/quiz/edit' in request.url%}
             <button><a href="{{ url_for('.show')}}">Назад к списку викторин</a></button>
+            {% endif %}
+            {% if '/structure/edit' in request.url%}
+            <button><a href="{{ url_for('.show')}}">Назад к списку разделов</a></button>
             {% endif %}
             {% if '/photo_report/edit' in request.url%}
             <button><a href="{{ url_for('.show')}}">Назад к списку фоторепортажей</a></button>

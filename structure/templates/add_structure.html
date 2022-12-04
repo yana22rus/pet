@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="POST" enctype=multipart/form-data>
+    <label for="title">Заголовок
+    <input type="text" name="title" placeholder="Заголовок" id="title" size="30" maxlength="30">
+    </label>
+    <label for="subtitle">Подзаголовок
+    <input type="text" name="subtitle" placeholder="Подзаголовок" id="subtitle" size="30" maxlength="30">
+    </label>
+    <label for="content_page">Описание
+    <input type="text" name="content_page" placeholder="Описание" id="content_page" size="30" maxlength="30">
+    </label>
+    <select name="structure">
+        <option hidden>Выбрать значение</option>
+        {% for x in default_value_structure %}
+        <option id="{{x}}">{{x}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <br>
+    <input type="submit" value="Сохранить">
+</form>
+{% endblock %}

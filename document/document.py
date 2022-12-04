@@ -8,7 +8,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 from config import Config
 
-document_bp = Blueprint("/q", __name__, template_folder="templates")
+document_bp = Blueprint("/document", __name__, template_folder="templates")
 
 
 
@@ -65,18 +65,18 @@ def create():
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
             cur.execute(f"""SELECT id FROM document  WHERE title='{title}';""")
-            news_id = cur.fetchone()[0]
+            entity_id = cur.fetchone()[0]
 
-            return redirect(url_for('.update', news_id=news_id), 302)
+            return redirect(url_for('.update', entity_id=entity_id), 302)
 
-    return render_template("document_add.html")
+    return render_template("add_document.html")
 
 
-@document_bp.route("/document/edit/<int:news_id>", methods=["GET", "POST"])
-def update(news_id):
+@document_bp.route("/document/edit/<int:entity_id>", methods=["GET", "POST"])
+def update(entity_id):
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
-    cur.execute(f"""SELECT login,title,subtitle,content_page,files FROM document  WHERE id='{news_id}';""")
+    cur.execute(f"""SELECT login,title,subtitle,content_page,files FROM document WHERE id='{entity_id}';""")
     query = [cur.fetchone()]
 
     if request.method == "POST":
@@ -93,20 +93,20 @@ def update(news_id):
             with sqlite3.connect(Config.DATABASE_URI) as con:
                 cur = con.cursor()
                 cur.execute(
-                    f"""UPDATE document SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{news_id}';""")
+                    f"""UPDATE document SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{entity_id}';""")
 
-            return redirect(url_for('.update', news_id=news_id), 302)
+            return redirect(url_for('.update', entity_id=entity_id), 302)
 
         if request.form["submit"] == "Удалить":
-            delete(news_id)
+            delete(entity_id)
             return redirect(url_for(".show"))
 
     return render_template("edit_document.html", query=query,lst=json.loads(query[-1][-1]))
 
 
-@document_bp.route("/document/delete/<int:news_id>", methods=["POST"])
-def delete(news_id):
+@document_bp.route("/document/delete/<int:entity_id>", methods=["POST"])
+def delete(entity_id):
     if request.method == "POST":
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute(f"""DELETE FROM document WHERE id='{news_id}';""")
+            cur.execute(f"""DELETE FROM document WHERE id='{entity_id}';""")

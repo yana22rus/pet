@@ -1,3 +1,4 @@
+import json
 import os
 import sqlite3
 from datetime import datetime
@@ -7,15 +8,18 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 from config import Config
 
-article_bp = Blueprint("/article", __name__, template_folder="templates")
+structure_bp = Blueprint("/structure", __name__, template_folder="templates")
+
+default_value_structure = (
+    "Раздел новостей", "Раздел документов", "Раздел опросов", "Раздел викторин", "Раздел фоторепортажей",
+    "Раздел видео-репортажей")
 
 
-
-@article_bp.route("/article", methods=["GET", "POST"])
+@structure_bp.route("/structure", methods=["GET", "POST"])
 def show():
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
-        cur.execute(f"""SELECT id,title,subtitle,login,time FROM Article;""")
+        cur.execute(f"""SELECT id,title,subtitle,login,time FROM structure;""")
         data = cur.fetchall()
 
     if request.method == "POST":
@@ -26,7 +30,7 @@ def show():
     return render_template("structure.html", data=data)
 
 
-@article_bp.route("/article/add", methods=["GET", "POST"])
+@structure_bp.route("/structure/add", methods=["GET", "POST"])
 def create():
     if request.method == "POST":
         login = "admin"
@@ -39,32 +43,28 @@ def create():
 
         content_page = request.form["content_page"]
 
-        file = request.files["img"]
-
-        img = f'{uuid4()}.{file.filename.split(".")[-1].lower()}'
-
-        file.save(os.path.join("static", Config.UPLOAD_FOLDER, img))
+        structure = request.form["structure"]
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute("INSERT INTO Article (login,time,title,subtitle,content_page,img) VALUES  (?,?,?,?,?,?)",
-                        (login, time, title, subtitle, content_page, img))
+            cur.execute("INSERT INTO structure (login,time,title,subtitle,content_page,structure) VALUES  (?,?,?,?,?,?)",
+                        (login, time, title, subtitle, content_page,structure))
 
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute(f"""SELECT id FROM Article  WHERE title='{title}';""")
+            cur.execute(f"""SELECT id FROM structure WHERE title='{title}';""")
             entity_id = cur.fetchone()[0]
 
             return redirect(url_for('.update', entity_id=entity_id), 302)
 
-    return render_template("add_structure.html")
+    return render_template("add_structure.html",default_value_structure=default_value_structure)
 
 
-@article_bp.route("/article/edit/<int:entity_id>", methods=["GET", "POST"])
+@structure_bp.route("/structure/edit/<int:entity_id>", methods=["GET", "POST"])
 def update(entity_id):
     with sqlite3.connect(Config.DATABASE_URI) as con:
         cur = con.cursor()
-    cur.execute(f"""SELECT login,title,subtitle,content_page,img FROM Article  WHERE id='{entity_id}';""")
+    cur.execute(f"""SELECT login,title,subtitle,content_page,structure FROM structure  WHERE id='{entity_id}';""")
     query = [cur.fetchone()]
 
     if request.method == "POST":
@@ -78,10 +78,12 @@ def update(entity_id):
 
             content_page = request.form["content_page"]
 
+            structure = request.form["structure"]
+
             with sqlite3.connect(Config.DATABASE_URI) as con:
                 cur = con.cursor()
                 cur.execute(
-                    f"""UPDATE Article SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}' WHERE id='{entity_id}';""")
+                    f"""UPDATE structure SET login='{login}', title='{title}',subtitle='{subtitle}',content_page='{content_page}',structure='{structure}'  WHERE id='{entity_id}';""")
 
             return redirect(url_for('.update', entity_id=entity_id), 302)
 
@@ -89,12 +91,12 @@ def update(entity_id):
             delete(entity_id)
             return redirect(url_for(".show"))
 
-    return render_template("edit_structure.html", query=query)
+    return render_template("edit_structure.html", query=query,default_value_structure=default_value_structure)
 
 
-@article_bp.route("/article/delete/<int:entity_id>", methods=["POST"])
+@structure_bp.route("/structure/delete/<int:entity_id>", methods=["POST"])
 def delete(entity_id):
     if request.method == "POST":
         with sqlite3.connect(Config.DATABASE_URI) as con:
             cur = con.cursor()
-            cur.execute(f"""DELETE FROM Article WHERE id='{entity_id}';""")
+            cur.execute(f"""DELETE FROM structure WHERE id='{entity_id}';""")
